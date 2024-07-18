@@ -30,6 +30,6 @@ kona-client.workspace = true
 zkvm-common.workspace = true
 
 # sp1
-sp1-zkvm = { workspace = true }
+sp1-zkvm = { git = "https://github.com/succinctlabs/sp1.git", branch = "chris/memory-limit" }
 
 [dev-dependencies]

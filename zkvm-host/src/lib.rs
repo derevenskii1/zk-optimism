@@ -108,7 +108,7 @@ pub fn execute_kona_program(boot_info: &BootInfoWithoutRollupConfig) -> Executio
     // cycle count.
     let client = ProverClient::mock();
 
-    let (mut _public_values, report) = client.execute(KONA_ELF, stdin).unwrap();
+    let (mut _public_values, report) = client.execute(KONA_ELF, stdin).run().unwrap();
     report
 }
 
