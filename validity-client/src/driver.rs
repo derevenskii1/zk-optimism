@@ -4,13 +4,14 @@
 //! [L2PayloadAttributes]: kona_derive::types::L2PayloadAttributes
 
 use crate::MultiblockOracleL2ChainProvider;
-use kona_client::{
-    l1::{OracleBlobProvider, OracleL1ChainProvider}, BootInfo, HintType,
-};
 use alloc::sync::Arc;
 use alloy_consensus::{Header, Sealed};
 use anyhow::{anyhow, Result};
 use core::fmt::Debug;
+use kona_client::{
+    l1::{OracleBlobProvider, OracleL1ChainProvider},
+    BootInfo, HintType,
+};
 use kona_derive::{
     pipeline::{DerivationPipeline, Pipeline, PipelineBuilder, StepResult},
     sources::EthereumDataSource,
@@ -26,8 +27,10 @@ use kona_preimage::{CommsClient, PreimageKey, PreimageKeyType};
 use kona_primitives::{BlockInfo, L2AttributesWithParent, L2BlockInfo};
 
 /// An oracle-backed derivation pipeline.
-pub type OraclePipeline<O> =
-    DerivationPipeline<OracleAttributesQueue<OracleDataProvider<O>, O>, MultiblockOracleL2ChainProvider<O>>;
+pub type OraclePipeline<O> = DerivationPipeline<
+    OracleAttributesQueue<OracleDataProvider<O>, O>,
+    MultiblockOracleL2ChainProvider<O>,
+>;
 
 /// An oracle-backed Ethereum data source.
 pub type OracleDataProvider<O> =
@@ -120,18 +123,31 @@ impl<O: CommsClient + Send + Sync + Debug> MultiBlockDerivationDriver<O> {
             .build();
 
         let l2_claim_block = boot_info.l2_claim_block;
-        Ok(Self { l2_safe_head, l2_safe_head_header, pipeline, l2_claim_block })
+        Ok(Self {
+            l2_safe_head,
+            l2_safe_head_header,
+            pipeline,
+            l2_claim_block,
+        })
     }
 
-    pub fn update_safe_head(&mut self, new_safe_head: L2BlockInfo, new_safe_head_header: Sealed<Header>) {
+    pub fn update_safe_head(
+        &mut self,
+        new_safe_head: L2BlockInfo,
+        new_safe_head_header: Sealed<Header>,
+    ) {
         self.l2_safe_head = new_safe_head;
+        println!("Update safe head to {}", new_safe_head.block_info.number);
         self.l2_safe_head_header = new_safe_head_header;
     }
 
     /// Produces the disputed [Vec<L2AttributesWithParent>] payloads, starting with the one after
     /// the L2 output root, for all the payloads derived in a given span batch.
     pub async fn produce_payloads(&mut self) -> Result<Vec<L2AttributesWithParent>> {
-        println!("Stepping on Pipeline for L2 Block: {}", self.l2_safe_head.block_info.number);
+        println!(
+            "Stepping on Pipeline for L2 Block: {}",
+            self.l2_safe_head.block_info.number
+        );
         match self.pipeline.step(self.l2_safe_head).await {
             StepResult::PreparedAttributes => {
                 println!("Found Attributes");
@@ -140,11 +156,14 @@ impl<O: CommsClient + Send + Sync + Debug> MultiBlockDerivationDriver<O> {
                     let attributes = self.pipeline.next();
                     match attributes {
                         Some(attr) => {
-                            if attr.parent.block_info.number + 1 == self.l2_claim_block {
-                                payloads.push(attr);
+                            println!(
+                                "Pushing attributes for block {}",
+                                attr.parent.block_info.number
+                            );
+                            let attr_parent_block_number = attr.parent.block_info.number;
+                            payloads.push(attr);
+                            if attr_parent_block_number + 1 == self.l2_claim_block {
                                 break;
-                            } else {
-                                payloads.push(attr);
                             }
                         }
                         None => {
@@ -201,14 +220,22 @@ impl<O: CommsClient + Send + Sync + Debug> MultiBlockDerivationDriver<O> {
             )
             .await?;
 
-        let safe_hash: alloy_primitives::FixedBytes<32> =
-            output_preimage[96..128].try_into().map_err(|_| anyhow!("Invalid L2 output root"))?;
+        let safe_hash: alloy_primitives::FixedBytes<32> = output_preimage[96..128]
+            .try_into()
+            .map_err(|_| anyhow!("Invalid L2 output root"))?;
         let safe_header = l2_chain_provider.header_by_hash(safe_hash)?;
-        let safe_head_info = l2_chain_provider.l2_block_info_by_number(safe_header.number).await?;
+        let safe_head_info = l2_chain_provider
+            .l2_block_info_by_number(safe_header.number)
+            .await?;
 
-        let l1_origin =
-            chain_provider.block_info_by_number(safe_head_info.l1_origin.number).await?;
+        let l1_origin = chain_provider
+            .block_info_by_number(safe_head_info.l1_origin.number)
+            .await?;
 
-        Ok((l1_origin, safe_head_info, Sealed::new_unchecked(safe_header, safe_hash)))
+        Ok((
+            l1_origin,
+            safe_head_info,
+            Sealed::new_unchecked(safe_header, safe_hash),
+        ))
     }
 }

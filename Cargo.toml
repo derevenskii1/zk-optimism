@@ -1,5 +1,11 @@
 [workspace]
-members = ["common", "native-host", "validity-client", "zkvm-client", "zkvm-host"]
+members = [
+    "common",
+    "native-host",
+    "validity-client",
+    "zkvm-client",
+    "zkvm-host",
+]
 resolver = "2"
 
 [workspace.package]
@@ -12,17 +18,26 @@ repository = ""
 [workspace.dependencies]
 
 # kona
-kona-common = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
-kona-common-proc = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
-kona-preimage = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream", features = [
-    "rkyv",
-] }
-kona-primitives = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
-kona-mpt = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
-kona-derive = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream", default-features = false }
-kona-executor = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
-kona-client = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
-kona-host = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-common = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-common-proc = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-preimage = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream", features = [
+#     "rkyv",
+# ] }
+# kona-primitives = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-mpt = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-derive = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream", default-features = false }
+# kona-executor = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-client = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+# kona-host = { git = "https://github.com/moongate-forks/kona/", branch = "new-upstream" }
+kona-common = { path = "../kona/crates/common" }
+kona-common-proc = { path = "../kona/crates/common-proc" }
+kona-preimage = { path = "../kona/crates/preimage", features = ["rkyv"] }
+kona-primitives = { path = "../kona/crates/primitives" }
+kona-mpt = { path = "../kona/crates/mpt" }
+kona-derive = { path = "../kona/crates/derive", default-features = false }
+kona-executor = { path = "../kona/crates/executor" }
+kona-client = { path = "../kona/bin/client" }
+kona-host = { path = "../kona/bin/host" }
 
 # general
 anyhow = { version = "1.0.86", default-features = false }

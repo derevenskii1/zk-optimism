@@ -1,23 +1,23 @@
 //! A program to verify a Optimism L2 block STF in the zkVM.
 #![cfg_attr(target_os = "zkvm", no_main)]
 
-use kona_executor::{StatelessL2BlockExecutor, NoPrecompileOverride};
 use kona_client::{
     l1::{OracleBlobProvider, OracleL1ChainProvider},
     BootInfo,
 };
+use kona_executor::{NoPrecompileOverride, StatelessL2BlockExecutor};
 
 mod driver;
 pub use driver::MultiBlockDerivationDriver;
 
 mod l2_chain_provider;
+use alloy_eips::eip2718::Decodable2718;
 use kona_primitives::{L2ExecutionPayloadEnvelope, OpBlock};
 use l2_chain_provider::MultiblockOracleL2ChainProvider;
 use op_alloy_consensus::OpTxEnvelope;
-use alloy_eips::eip2718::Decodable2718;
 
 use alloc::sync::Arc;
-use alloy_consensus::{Sealed, Sealable};
+use alloy_consensus::{Sealable, Sealed};
 use cfg_if::cfg_if;
 
 extern crate alloc;
@@ -102,8 +102,17 @@ fn main() {
 
             for payload in l2_attrs_with_parents {
                 // Execute the payload to generate a new block header.
-                println!("Executing Payload for L2 Block: {}", payload.parent.block_info.number + 1);
-                new_block_header = executor.execute_payload(payload.attributes.clone()).unwrap();
+                println!(
+                    "Executing Payload for L2 Block: {}",
+                    payload.parent.block_info.number + 1
+                );
+                new_block_header = executor
+                    .execute_payload(payload.attributes.clone())
+                    .unwrap();
+                println!(
+                    "Executed Payload for L2 Block: {}",
+                    payload.parent.block_info.number + 1
+                );
                 let new_block_number = new_block_header.number;
                 assert_eq!(new_block_number, payload.parent.block_info.number + 1);
 
@@ -114,16 +123,20 @@ fn main() {
                         .attributes
                         .transactions
                         .iter()
-                        .map(|raw_tx| {
-                            OpTxEnvelope::decode_2718(&mut raw_tx.as_ref()).unwrap()
-                        })
+                        .map(|raw_tx| OpTxEnvelope::decode_2718(&mut raw_tx.as_ref()).unwrap())
                         .collect::<Vec<OpTxEnvelope>>(),
-                    withdrawals: boot.rollup_config.is_canyon_active(new_block_header.timestamp).then(Vec::new),
+                    withdrawals: boot
+                        .rollup_config
+                        .is_canyon_active(new_block_header.timestamp)
+                        .then(Vec::new),
                     ..Default::default()
-                }.into();
+                }
+                .into();
 
                 // Add all data from this block's execution to the cache.
-                l2_block_info = l2_provider.update_cache(new_block_header, l2_payload_envelope, &boot.rollup_config).unwrap();
+                l2_block_info = l2_provider
+                    .update_cache(new_block_header, l2_payload_envelope, &boot.rollup_config)
+                    .unwrap();
 
                 // Increment last_block_num and check if we have reached the claim block.
                 if new_block_number == boot.l2_claim_block {
@@ -134,7 +147,7 @@ fn main() {
             // Update data for the next iteration.
             driver.update_safe_head(
                 l2_block_info,
-                Sealed::new_unchecked(new_block_header.clone(), new_block_header.hash_slow())
+                Sealed::new_unchecked(new_block_header.clone(), new_block_header.hash_slow()),
             );
         }
 

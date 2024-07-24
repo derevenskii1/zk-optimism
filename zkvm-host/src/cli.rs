@@ -25,8 +25,8 @@ pub struct MultiblockCliArgs {
     #[arg(long)]
     pub run_native: bool,
 
-    #[arg(short, long, default_value = "4")]
-    pub verbosity_level: u8,
+    #[arg(short, long, default_value = "2")]
+    pub verbosity: u8,
 }
 
 #[derive(Parser, Debug)]

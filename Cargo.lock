@@ -3063,7 +3063,6 @@ dependencies = [
 [[package]]
 name = "kona-client"
 version = "0.1.0"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -3089,7 +3088,6 @@ dependencies = [
 [[package]]
 name = "kona-common"
 version = "0.0.2"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "anyhow",
  "cfg-if",
@@ -3100,7 +3098,6 @@ dependencies = [
 [[package]]
 name = "kona-common-proc"
 version = "0.0.2"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "anyhow",
  "cfg-if",
@@ -3113,7 +3110,6 @@ dependencies = [
 [[package]]
 name = "kona-derive"
 version = "0.0.2"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloc-no-stdlib",
  "alloy-consensus",
@@ -3148,7 +3144,6 @@ dependencies = [
 [[package]]
 name = "kona-executor"
 version = "0.0.1"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -3165,7 +3160,6 @@ dependencies = [
 [[package]]
 name = "kona-host"
 version = "0.1.0"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -3197,7 +3191,6 @@ dependencies = [
 [[package]]
 name = "kona-mpt"
 version = "0.0.2"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloy-consensus",
  "alloy-primitives",
@@ -3211,7 +3204,6 @@ dependencies = [
 [[package]]
 name = "kona-preimage"
 version = "0.0.2"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloy-primitives",
  "anyhow",
@@ -3225,7 +3217,6 @@ dependencies = [
 [[package]]
 name = "kona-primitives"
 version = "0.0.1"
-source = "git+https://github.com/moongate-forks/kona/?branch=new-upstream#de6c9f4123897768718234cf1650803726d61611"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
@@ -3728,9 +3719,9 @@ checksum = "e296cf87e61c9cfc1a61c3c63a0f7f286ed4554e0e22be84e8a38e1d264a2a29"
 
 [[package]]
 name = "op-alloy-consensus"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "767fd3026c514f4d2ebdb4ebda5ed8857660dd1ef5bfed2aaa2ae8e42019630e"
+checksum = "f491085509d77ebd05dbf75592093a9bebc8e7fc642b90fb4ac13b747d48b2fc"
 dependencies = [
  "alloy-consensus",
  "alloy-eips",
