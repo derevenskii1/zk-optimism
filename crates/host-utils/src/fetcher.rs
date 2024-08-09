@@ -1,13 +1,12 @@
-use alloy::{
-    eips::BlockId,
-    providers::{Provider, ProviderBuilder, RootProvider},
-    transports::http::{Client, Http},
-};
 use alloy_consensus::Header;
 use alloy_primitives::B256;
 use alloy_sol_types::SolValue;
 use anyhow::Result;
 use cargo_metadata::MetadataCommand;
+use ethers::{
+    providers::{Http, Middleware, Provider},
+    types::{BlockNumber, H160, U256},
+};
 use kona_host::HostCli;
 use std::{cmp::Ordering, env, fs, path::Path, str::FromStr, sync::Arc};
 
@@ -19,10 +18,10 @@ use crate::{L2Output, ProgramType};
 /// It is used to generate the boot info for the native host program.
 pub struct SP1KonaDataFetcher {
     pub l1_rpc: String,
-    pub l1_provider: Arc<RootProvider<Http<Client>>>,
+    pub l1_provider: Arc<Provider<Http>>,
     pub l1_beacon_rpc: String,
     pub l2_rpc: String,
-    pub l2_provider: Arc<RootProvider<Http<Client>>>,
+    pub l2_provider: Arc<Provider<Http>>,
 }
 
 impl Default for SP1KonaDataFetcher {
@@ -48,11 +47,13 @@ pub struct BlockInfo {
 impl SP1KonaDataFetcher {
     pub fn new() -> Self {
         let l1_rpc = env::var("L1_RPC").unwrap_or_else(|_| "http://localhost:8545".to_string());
-        let l1_provider = Arc::new(ProviderBuilder::default().on_http(&l1_rpc).build());
+        let l1_provider =
+            Arc::new(Provider::<Http>::try_from(&l1_rpc).expect("Failed to create L1 provider"));
         let l1_beacon_rpc =
             env::var("L1_BEACON_RPC").unwrap_or_else(|_| "http://localhost:5052".to_string());
         let l2_rpc = env::var("L2_RPC").unwrap_or_else(|_| "http://localhost:9545".to_string());
-        let l2_provider = Arc::new(ProviderBuilder::default().on_http(&l2_rpc).build());
+        let l2_provider =
+            Arc::new(Provider::<Http>::try_from(&l2_rpc).expect("Failed to create L2 provider"));
         SP1KonaDataFetcher {
             l1_rpc,
             l1_provider,
