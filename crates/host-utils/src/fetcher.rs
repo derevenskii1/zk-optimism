@@ -91,10 +91,9 @@ impl SP1KonaDataFetcher {
     ) -> Result<Header> {
         let provider = self.get_provider(chain_mode);
         let header = provider
-            .get_block_by_number(block_number, false)
+            .get_header(BlockNumber::Number(block_number.into()))
             .await?
-            .unwrap()
-            .header;
+            .unwrap();
         Ok(header)
     }
 
@@ -109,7 +108,7 @@ impl SP1KonaDataFetcher {
         for block_number in start..=end {
             let provider = self.get_provider(chain_mode);
             let block = provider
-                .get_block_by_number(block_number, false)
+                .get_block(BlockNumber::Number(block_number.into()))
                 .await?
                 .unwrap();
             block_data.push(BlockInfo {
@@ -128,16 +127,16 @@ impl SP1KonaDataFetcher {
         target_timestamp: U256,
     ) -> Result<B256> {
         let provider = self.get_provider(chain_mode);
-        let latest_block = provider
-            .get_block(BlockId::Number(BlockNumber::Latest), BlockOption::Full)
-            .await?
-            .unwrap();
+        let latest_block = provider.get_block(BlockNumber::Latest).await?.unwrap();
         let mut low = 0;
         let mut high = latest_block.number.unwrap().as_u64();
 
         while low <= high {
             let mid = (low + high) / 2;
-            let block = provider.get_block_by_number(mid, false).await?.unwrap();
+            let block = provider
+                .get_block(BlockNumber::Number(mid.into()))
+                .await?
+                .unwrap();
             let block_timestamp = block.timestamp;
 
             match block_timestamp.cmp(&target_timestamp) {
@@ -148,7 +147,10 @@ impl SP1KonaDataFetcher {
         }
 
         // Return the block hash of the closest block after the target timestamp
-        let block = provider.get_block_by_number(low, false).await?.unwrap();
+        let block = provider
+            .get_block(BlockNumber::Number(low.into()))
+            .await?
+            .unwrap();
         Ok(block.hash.unwrap().0.into())
     }
 

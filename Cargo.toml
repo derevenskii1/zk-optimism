@@ -61,11 +61,13 @@ zkvm-host = { path = "zkvm-host" }
 # Once kona-host moves to using the new alloy, we can use alloy instead of ethers.
 # alloy = { version = "=0.2", default-features = false, features = ["full"] }
 ethers = { version = "2.0" }
-alloy-primitives = { version = "0.7.7", default-features = false }
-alloy-rlp = { version = "0.3.5", default-features = false }
-alloy-consensus = { version = "=0.2", default-features = false }
-alloy-sol-types = { version = "0.7.7" }
-alloy-eips = { version = "=0.2", default-features = false }
+alloy-primitives = { version = "0.7.6", default-features = false }
+alloy-rlp = { version = "= 0.3.5", default-features = false }
+alloy-consensus = { version = ">=0.2.0,<0.2.1", default-features = false }
+alloy-rpc-types-eth = { version = ">=0.2.0,<0.2.1", default-features = false }
+alloy-provider = "=0.2.0"
+alloy-sol-types = { version = "0.7.6" }
+alloy-eips = { version = ">=0.2.0,<0.2.1", default-features = false }
 revm = { git = "https://github.com/bluealloy/revm", tag = "v37", version = "10.0.0", default-features = false }
 op-alloy-consensus = { version = "0.1.4", default-features = false }
 num-format = "0.4.4"
