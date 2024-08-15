@@ -63,6 +63,7 @@ The ZKL2OutputOracle is a small diff to this contract that makes the following c
 To perform this upgrade, use the `ZKUpgrader.s.sol` script in the repo. This will deploy a new ZKL2OutputOracle contract and use the Admin private key from your `.env` file to upgrade the existing address to point to this new implementation. It will then call `initialize()` to set all the contract parameters appropriately.
 
 ```
+cd contracts
 forge script script/ZKUpgrader.s.sol:ZKUpgrader  --rpc-url <L1 RPC> --private-key <ADMIN PK> --verify --verifier etherscan --etherscan-api-key <ETHERSCAN API> --broadcast --slow --vvvv
 ```
 (Equivalently, you can call `just upgrade-l2oo <L1_RPC> <ADMIN_PK> <Optional: ETHERSCAN_API_KEY>` from the root of the project.)
