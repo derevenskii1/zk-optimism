@@ -4,6 +4,8 @@ To deploy the test contracts, run the following command:
 ```
 forge script script/DemoDeployer.s.sol:DemoDeployer --rpc-url $L1_RPC --private-key $ANY_PK --verify --verifier etherscan --etherscan-api-key $ETHERSCAN_API_KEY --broadcast --slow
 ```
+If the `zkconfig.json` file is filled out (specifically, if `chainId != 0`), that config will be used to initialize the contract. If `chainId == 0`, the contract can be initialized manually later.
+
 ## ZK Contracts
 
 The `contracts/` directory consists of two things:
