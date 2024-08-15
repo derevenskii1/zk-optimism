@@ -1,3 +1,9 @@
+## This branch contains the Demo contracts for testing. For deployment, use another branch.
+
+To deploy the test contracts, run the following command:
+```
+forge script script/DemoDeployer.s.sol:DemoDeployer --rpc-url $L1_RPC --private-key $ANY_PK --verify --verifier etherscan --etherscan-api-key $ETHERSCAN_API_KEY --broadcast --slow
+```
 ## ZK Contracts
 
 The `contracts/` directory consists of two things:
